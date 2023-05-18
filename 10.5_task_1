@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp27
+{
+    interface ICalculator
+    {
+        double Add(double a, double b);
+    }
+
+    class Calculator : ICalculator
+    {
+        public double Add(double a, double b)
+        {
+            return a + b;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ICalculator calculator = new Calculator();
+            double result = 0;
+
+            try
+            {
+                Console.Write("Введите первое число: ");
+                double a = double.Parse(Console.ReadLine());
+
+                Console.Write("Введите второе число: ");
+                double b = double.Parse(Console.ReadLine());
+
+                result = calculator.Add(a, b);
+
+                Console.WriteLine($"Результат: {result}");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Вы ввели некорректное число.");
+            }
+            finally
+            {
+                Console.WriteLine("Нажмите любую клавишу, чтобы выйти из программы.");
+                Console.ReadKey();
+            }
+        }
+    }
+}
