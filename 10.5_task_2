@@ -1,1 +1,89 @@
 
+using System;
+using System.IO;
+
+namespace MiniCalculator
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ILogger logger = new ConsoleLogger();
+
+            try
+            {
+                Console.Write("Введите первое число: ");
+                double num1 = Convert.ToDouble(Console.ReadLine());
+
+                Console.Write("Введите второе число: ");
+                double num2 = Convert.ToDouble(Console.ReadLine());
+
+                ICalculator calculator = new Calculator(logger);
+                double result = calculator.Add(num1, num2);
+
+                Console.WriteLine($"Результат сложения: {result}");
+            }
+            catch (FormatException)
+            {
+                logger.LogError("Ошибка: Некорректный формат числа.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Ошибка: {e.Message}");
+            }
+            finally
+            {
+                logger.LogEvent("Окончание работы программы.");
+            }
+
+            Console.ReadLine();
+        }
+    }
+
+    public interface ICalculator
+    {
+        double Add(double num1, double num2);
+    }
+
+    public class Calculator : ICalculator
+    {
+        private ILogger _logger;
+
+        public Calculator(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public double Add(double num1, double num2)
+        {
+            _logger.LogEvent($"Сложение чисел {num1} и {num2}.");
+
+            double result = num1 + num2;
+
+            return result;
+        }
+    }
+
+    public interface ILogger
+    {
+        void LogError(string message);
+        void LogEvent(string message);
+    }
+
+    public class ConsoleLogger : ILogger
+    {
+        public void LogError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
+        }
+
+        public void LogEvent(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(message);
+            Console.ResetColor();
+        }
+    }
+}
